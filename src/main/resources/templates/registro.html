@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar conta - Biblioteca Pessoal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            --surface: #ffffff;
+            --surface-2: #f8fafc;
+            --border: #e2e8f0;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+            width: 100%;
+            max-width: 440px;
+            padding: 40px;
+        }
+
+        .titulo {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 4px;
+            letter-spacing: -0.025em;
+        }
+
+        .subtitulo {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+        }
+
+        form { display: flex; flex-direction: column; gap: 16px; }
+
+        .field { display: flex; flex-direction: column; gap: 6px; }
+
+        .label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 12px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface-2);
+            color: var(--text);
+            transition: all 0.15s ease;
+            width: 100%;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgb(99 102 241 / 0.1);
+        }
+
+        button[type="submit"] {
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 13px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            box-shadow: 0 4px 12px -2px rgb(99 102 241 / 0.5);
+            margin-top: 8px;
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 16px -4px rgb(99 102 241 / 0.6);
+        }
+
+        .alerta {
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 18px;
+            background: #fef2f2;
+            color: var(--danger);
+            border-left: 4px solid var(--danger);
+        }
+
+        .hint {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+
+        .link-voltar {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .link-voltar a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .link-voltar a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1 class="titulo">Criar conta</h1>
+        <p class="subtitulo">Preencha os dados para acessar o sistema</p>
+
+        <div class="alerta" th:if="${erro}" th:text="${erro}"></div>
+
+        <form th:action="@{/registro}" method="post">
+            <div class="field">
+                <label class="label" for="nome">Nome completo</label>
+                <input type="text" id="nome" name="nome" placeholder="Como você quer ser chamado" required autofocus>
+            </div>
+
+            <div class="field">
+                <label class="label" for="username">Usuário</label>
+                <input type="text" id="username" name="username" placeholder="Ex: joao.silva" required pattern="[a-zA-Z0-9._-]+" title="Use apenas letras, números, ponto, traço ou underline">
+                <div class="hint">Sem espaços. Apenas letras, números, ponto, traço ou underline.</div>
+            </div>
+
+            <div class="field">
+                <label class="label" for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" placeholder="Mínimo 6 caracteres" required minlength="6">
+            </div>
+
+            <div class="field">
+                <label class="label" for="confirmarSenha">Confirmar senha</label>
+                <input type="password" id="confirmarSenha" name="confirmarSenha" placeholder="Digite a senha novamente" required minlength="6">
+            </div>
+
+            <button type="submit">Criar conta</button>
+        </form>
+
+        <div class="link-voltar">
+            Já tem uma conta? <a th:href="@{/login}">Fazer login</a>
+        </div>
+    </div>
+</body>
+</html>
