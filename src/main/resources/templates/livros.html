@@ -433,7 +433,7 @@
                 <p>Sistema de cadastro e gerenciamento de livros</p>
             </div>
             <div class="topbar-actions">
-                <span class="user-info">Conectado como <strong sec:authentication="name">usuário</strong></span>
+                <span class="user-info">Conectado como <strong th:text="${nomeUsuarioLogado}">usuário</strong></span>
                 <form th:action="@{/logout}" method="post" style="display:inline;">
                     <button type="submit" class="btn-outline">Sair</button>
                 </form>
