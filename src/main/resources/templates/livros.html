@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteca Pessoal</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: 30px auto; padding: 20px; background: #f9fafb; }
+        h1, h2 { color: #1f2937; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        th, td { padding: 10px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+        th { background: #f3f4f6; }
+        form { display: grid; gap: 10px; max-width: 400px; background: white; padding: 20px; border-radius: 8px; }
+        input, select, button { padding: 8px; font-size: 14px; border: 1px solid #d1d5db; border-radius: 4px; }
+        button { background: #2563eb; color: white; border: none; cursor: pointer; font-weight: 600; }
+        button:hover { background: #1e40af; }
+        .btn-excluir { background: #dc2626; padding: 6px 12px; }
+        .btn-excluir:hover { background: #991b1b; }
+        .erro { color: #dc2626; font-size: 13px; }
+        .vazio { color: #6b7280; padding: 20px; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>📚 Minha Biblioteca</h1>
+
+    <h2>Cadastrar Livro</h2>
+    <form th:action="@{/livros}" th:object="${livro}" method="post">
+        <input type="text" th:field="*{titulo}" placeholder="Título" required>
+        <span class="erro" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></span>
+
+        <input type="text" th:field="*{autor}" placeholder="Autor" required>
+        <span class="erro" th:if="${#fields.hasErrors('autor')}" th:errors="*{autor}"></span>
+
+        <input type="text" th:field="*{isbn}" placeholder="ISBN (opcional)">
+        <input type="number" th:field="*{ano}" placeholder="Ano de publicação">
+
+        <select th:field="*{categoria}" required>
+            <option value="">-- Selecione a categoria --</option>
+            <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nome}"></option>
+        </select>
+        <span class="erro" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></span>
+
+        <button type="submit">Salvar</button>
+    </form>
+
+    <h2>Livros Cadastrados</h2>
+    <table>
+        <thead>
+            <tr><th>Título</th><th>Autor</th><th>Ano</th><th>Categoria</th><th>Ações</th></tr>
+        </thead>
+        <tbody id="tabela-livros">
+            <tr th:if="${#lists.isEmpty(livros)}">
+                <td colspan="5" class="vazio">Nenhum livro cadastrado ainda.</td>
+            </tr>
+            <tr th:each="l : ${livros}" th:attr="data-id=${l.id}">
+                <td th:text="${l.titulo}"></td>
+                <td th:text="${l.autor}"></td>
+                <td th:text="${l.ano}"></td>
+                <td th:text="${l.categoria.nome}"></td>
+                <td>
+                    <button class="btn-excluir" th:attr="onclick='excluirLivro(' + ${l.id} + ')'">Excluir</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        async function excluirLivro(id) {
+            if (!confirm('Tem certeza que deseja excluir este livro?')) return;
+            try {
+                const resp = await fetch('/livros/' + id, { method: 'DELETE' });
+                if (resp.ok) {
+                    document.querySelector('tr[data-id="' + id + '"]').remove();
+                } else {
+                    alert('Erro ao excluir.');
+                }
+            } catch (e) {
+                alert('Erro de rede: ' + e.message);
+            }
+        }
+    </script>
+</body>
+</html>
